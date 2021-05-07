@@ -1,6 +1,8 @@
 const TelegramApi = require('node-telegram-bot-api')
 const {gameOptions, againOptions} = require('./options')
 const tokken = '1825046944:AAFhzOOhOO0bJk856JGKMExAaGqI8dwX-CY'
+const sequelize = require('./db')
+const UserModel = require('./models')
 
 const bot = new TelegramApi(tokken,{polling:true})
 
@@ -13,6 +15,17 @@ const chats = {}
 
 
 const start = async (msg) =>{
+
+    try {
+        await sequelize.authenticate()
+        await sequelize.sync()
+    } catch (e){
+        if(e){
+            console.error(`Подключение к БД сломал))) ${e}`)
+        }
+    }
+
+
     const chatId = msg.chat.id
     chats[chatId] = undefined
     await bot.sendSticker(chatId, 'https://tlgrm.ru/_/stickers/ea5/382/ea53826d-c192-376a-b766-e5abc535f1c9/7.jpg')
@@ -41,7 +54,7 @@ bot.on('message', async msg=>{
     }
     if(text === '/game'){
         startGame(chatId)
-        return 
+        return
     }
     return  bot.sendMessage(chatId, `Я не понимаю, что за бред ты пишешь?`)
 })
