@@ -41,7 +41,7 @@ bot.on('message', async msg=>{
     }
     if(text === '/game'){
         startGame(chatId)
-        return
+        return 
     }
     return  bot.sendMessage(chatId, `Я не понимаю, что за бред ты пишешь?`)
 })
