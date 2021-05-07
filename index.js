@@ -51,10 +51,13 @@ bot.on('callback_query', async (msg) =>{
     const data = msg.data
     if(data === 'again'){
         startGame(chatId)
+        return
     }
     if(data === chats[chatId]){
-        return await bot.sendMessage(chatId,`Ура! Ты выиграл, я загадывал число: ${data}`,againOptions)
+        await bot.sendMessage(chatId,`Ура! Ты выиграл, я загадывал число: ${data}`,againOptions)
+        return
     } else {
-        bot.sendMessage(chatId, `Прости, я загадывал число ${chats[chatId]}, а ты выбрал ${msg.data} и проиграл`,againOptions)
+        await bot.sendMessage(chatId, `Прости, я загадывал число ${chats[chatId]}, а ты выбрал ${msg.data} и проиграл`,againOptions)
+        return
     }
 })
