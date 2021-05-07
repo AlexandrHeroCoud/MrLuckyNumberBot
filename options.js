@@ -1,5 +1,5 @@
 module.exports = {
-    gameOption: {
+    gameOptions: {
         reply_markup:JSON.stringify({
             inline_keyboard: [
                 [   {text: '1', callback_data: 1},
@@ -19,7 +19,7 @@ module.exports = {
         })
     },
 
-    againOption: {
+    againOptions: {
         reply_markup:JSON.stringify({
             inline_keyboard: [
                 [{text: 'Играть ещё раз', callback_data: 'again'}]

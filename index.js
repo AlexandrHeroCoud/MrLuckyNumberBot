@@ -24,7 +24,7 @@ const startGame = async (chatId)=>{
     const random = Math.floor(Math.random() * 10)
     chats[chatId] = random.toString()
     console.log(random)
-    await bot.sendMessage(chatId, 'Отгадывай! Давай сделай это!',gameOption)
+    await bot.sendMessage(chatId, 'Отгадывай! Давай сделай это!',gameOptions)
 }
 
 bot.on('message', async msg=>{
@@ -53,8 +53,8 @@ bot.on('callback_query', async (msg) =>{
         startGame(chatId)
     }
     if(data === chats[chatId]){
-        return await bot.sendMessage(chatId,`Ура! Ты выиграл, я загадывал число: ${data}`,againOption)
+        return await bot.sendMessage(chatId,`Ура! Ты выиграл, я загадывал число: ${data}`,againOptions)
     } else {
-        bot.sendMessage(chatId, `Прости, я загадывал число ${chats[chatId]}, а ты выбрал ${msg.data} и проиграл`,againOption)
+        bot.sendMessage(chatId, `Прости, я загадывал число ${chats[chatId]}, а ты выбрал ${msg.data} и проиграл`,againOptions)
     }
 })
