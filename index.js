@@ -8,7 +8,7 @@ const bot = new TelegramApi(tokken,{polling:true})
 
 bot.setMyCommands([
     {command:'/start',description:'Начальное приветствие'},
-    {command:'/info',description:'Получить информацию'},
+    {command:'/info',description:'Получить информацию о победах и поражениях'},
     {command:'/game',description:'Играть'},
 ])
 const chats = {}
@@ -29,7 +29,7 @@ const start = async (msg) =>{
     const chatId = msg.chat.id
     chats[chatId] = undefined
     await bot.sendSticker(chatId, 'https://tlgrm.ru/_/stickers/ea5/382/ea53826d-c192-376a-b766-e5abc535f1c9/7.jpg')
-    await bot.sendMessage(chatId,`Hello friend, your name ${msg.from.first_name}, your ID ${msg.from.id}`)
+    await bot.sendMessage(chatId,`Привет друг, твоё имя ${msg.from.first_name}, твой ID ${msg.from.id}`)
 }
 
 const startGame = async (chatId)=>{
@@ -45,11 +45,13 @@ bot.on('message', async msg=>{
     const chatId = msg.chat.id
 
     if(text === '/start'){
+        await UserModel.create({chatId})
         await start(msg)
         return
     }
     if(text === '/info'){
-        await bot.sendMessage(chatId,'Давай играть! Твоя задача отгадать число от 0 до 9')
+        const user = await UserModel.findOne({chatId})
+        await bot.sendMessage(chatId,`Количество побед: ${user.right}, \n Количество поражений: ${user.wrong}`)
         return
     }
     if(text === '/game'){
@@ -66,11 +68,15 @@ bot.on('callback_query', async (msg) =>{
         startGame(chatId)
         return
     }
-    if(data === chats[chatId]){
+
+    const user = await UserModel.findOne({chatId})
+
+    if(data == chats[chatId]){
+        user.right += 1
         await bot.sendMessage(chatId,`Ура! Ты выиграл, я загадывал число: ${data}`,againOptions)
-        return
     } else {
+        user.wrong += 1
         await bot.sendMessage(chatId, `Прости, я загадывал число ${chats[chatId]}, а ты выбрал ${msg.data} и проиграл`,againOptions)
-        return
     }
+    await user.save()
 })
