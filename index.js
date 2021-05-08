@@ -45,7 +45,10 @@ bot.on('message', async msg=>{
     const chatId = msg.chat.id
 
     if(text === '/start'){
-        await UserModel.create({chatId})
+        const user = await UserModel.findOne({chatId})
+        if(!user){
+            await UserModel.create({chatId})
+        }
         await start(msg)
         return
     }
